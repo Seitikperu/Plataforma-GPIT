@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/context/AuthContext'
 
 const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic']
 
@@ -12,6 +13,7 @@ export default function KpisPage() {
   const { id } = useParams()
   const router = useRouter()
   const supabase = createClient()
+  const { isAdmin } = useAuth()
   const [iniciativa, setIniciativa] = useState<{ codigo: string; titulo: string; kpi_unidad?: string } | null>(null)
   const [anio, setAnio] = useState(new Date().getFullYear())
   const [rows, setRows] = useState<KpiRow[]>(
@@ -19,6 +21,8 @@ export default function KpisPage() {
   )
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [hasKpiPlan, setHasKpiPlan] = useState(false)
+  const [hasEbitdaPlan, setHasEbitdaPlan] = useState(false)
 
   const loadData = useCallback(async () => {
     const [{ data: ini }, { data: kpis }] = await Promise.all([
@@ -26,6 +30,9 @@ export default function KpisPage() {
       supabase.from('kpi_mensual').select('*').eq('iniciativa_id', id).eq('anio', anio).order('mes'),
     ])
     if (ini) setIniciativa(ini)
+    setHasKpiPlan(kpis?.some(k => k.kpi_plan != null) ?? false)
+    setHasEbitdaPlan(kpis?.some(k => k.ebitda_plan_k != null) ?? false)
+
     setRows(Array.from({ length: 12 }, (_, i) => {
       const mes = i + 1
       const kpi = kpis?.find(k => k.mes === mes)
@@ -44,6 +51,36 @@ export default function KpisPage() {
 
   const updateRow = (mes: number, field: string, value: string) => {
     setRows(prev => prev.map(r => r.mes === mes ? { ...r, [field]: value === '' ? null : parseFloat(value) } : r))
+  }
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, startMes: number, field: string) => {
+    e.preventDefault()
+    const text = e.clipboardData.getData('text')
+    const rawVals = text.split(/[\t\n]/).map(v => v.trim()).filter(v => v !== '')
+    
+    if (rawVals.length > 0) {
+      setRows(prev => {
+        const next = [...prev]
+        for (let i = 0; i < rawVals.length; i++) {
+          const m = startMes + i
+          if (m > 12) break
+          
+          let cleaned = rawVals[i].replace(/[S/$\s]/g, '')
+          if (cleaned.match(/^[0-9.]+,[0-9]+$/)) {
+            cleaned = cleaned.replace(/\./g, '').replace(',', '.')
+          } else {
+            cleaned = cleaned.replace(/,/g, '')
+          }
+          const val = parseFloat(cleaned)
+          
+          const targetIndex = next.findIndex(r => r.mes === m)
+          if (targetIndex !== -1 && !isNaN(val)) {
+            next[targetIndex] = { ...next[targetIndex], [field]: val }
+          }
+        }
+        return next
+      })
+    }
   }
 
   const handleSave = async () => {
@@ -102,7 +139,7 @@ export default function KpisPage() {
       <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-slate-700/50 bg-slate-800/80">
           <h3 className="text-sm font-semibold text-slate-300">KPI Principal</h3>
-          <p className="text-xs text-slate-500 mt-0.5">Ingresa los valores plan y real para cada mes</p>
+          <p className="text-xs text-slate-500 mt-0.5">Puedes pegar (Ctrl+V) una fila desde Excel directo en las celdas para carga masiva</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -124,7 +161,11 @@ export default function KpisPage() {
                       type="number" step="0.01"
                       value={r.kpi_plan ?? ''}
                       onChange={e => updateRow(r.mes, 'kpi_plan', e.target.value)}
-                      className="w-16 px-1.5 py-1 bg-slate-900/60 border border-slate-600 rounded text-slate-300 text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      onPaste={e => handlePaste(e, r.mes, 'kpi_plan')}
+                      disabled={hasKpiPlan && !isAdmin}
+                      title={hasKpiPlan && !isAdmin ? "El plan ya fijó valores. Solicita apoyo a un Administrador." : ""}
+                      className={`w-16 px-1.5 py-1 border rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500
+                        ${hasKpiPlan && !isAdmin ? 'bg-slate-800/80 border-slate-700/50 text-slate-500 cursor-not-allowed' : 'bg-slate-900/60 border-slate-600 text-slate-300'}`}
                       placeholder="—"
                     />
                   </td>
@@ -141,6 +182,7 @@ export default function KpisPage() {
                         type="number" step="0.01"
                         value={r.kpi_real ?? ''}
                         onChange={e => updateRow(r.mes, 'kpi_real', e.target.value)}
+                        onPaste={e => handlePaste(e, r.mes, 'kpi_real')}
                         className={`w-16 px-1.5 py-1 border rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500
                           ${diff != null ? (diff >= 0 ? 'bg-emerald-900/30 border-emerald-700/50 text-emerald-300' : 'bg-red-900/30 border-red-700/50 text-red-300') : 'bg-slate-900/60 border-slate-600 text-slate-300'}`}
                         placeholder="—"
@@ -185,7 +227,11 @@ export default function KpisPage() {
                         type="number" step="0.001"
                         value={r[field] ?? ''}
                         onChange={e => updateRow(r.mes, field, e.target.value)}
-                        className="w-16 px-1.5 py-1 bg-slate-900/60 border border-slate-600 rounded text-slate-300 text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        onPaste={e => handlePaste(e, r.mes, field)}
+                        disabled={field === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin}
+                        title={field === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin ? "El plan ya fijó valores. Solicita apoyo a un Administrador." : ""}
+                        className={`w-16 px-1.5 py-1 border rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500
+                          ${field === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin ? 'bg-slate-800/80 border-slate-700/50 text-slate-500 cursor-not-allowed' : 'bg-slate-900/60 border-slate-600 text-slate-300'}`}
                         placeholder="—"
                       />
                     </td>

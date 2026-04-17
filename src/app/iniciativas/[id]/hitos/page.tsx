@@ -42,6 +42,9 @@ export default function HitosPage() {
   const [saving, setSaving] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showAdd, setShowAdd] = useState(false)
+  const [showMassiveAdd, setShowMassiveAdd] = useState(false)
+  const [massiveInput, setMassiveInput] = useState('')
+  const [parsedHitos, setParsedHitos] = useState<Partial<Hito>[]>([])
   const [newHito, setNewHito] = useState({
     gate: 'L1' as Gate, descripcion: '', responsable_texto: '',
     fecha_inicio_plan: '', fecha_fin_plan: '', es_money_step: false
@@ -80,6 +83,60 @@ export default function HitosPage() {
     }
   }
 
+  const handleMassiveParse = (text: string) => {
+    setMassiveInput(text)
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l !== '')
+    const parsed = lines.map(line => {
+      const cols = line.split('\t').map(c => c.trim())
+      const gate = cols[0] as Gate
+      const descripcion = cols[1] || ''
+      const responsable_texto = cols[2] || ''
+      
+      const parseDate = (dString: string) => {
+        if (!dString) return ''
+        if (dString.includes('/')) {
+            const parts = dString.split('/')
+            if (parts.length === 3) return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`
+        }
+        if (dString.match(/^\d{4}-\d{2}-\d{2}$/)) return dString
+        return ''
+      }
+      return {
+        gate: GATES_ORDER.includes(gate) ? gate : 'L1',
+        descripcion,
+        responsable_texto,
+        fecha_inicio_plan: parseDate(cols[3] || ''),
+        fecha_fin_plan: parseDate(cols[4] || ''),
+        es_money_step: false,
+        estatus: 'Pendiente' as EstatusHito,
+        avance_pct: 0
+      }
+    }).filter(h => h.descripcion !== '')
+    
+    setParsedHitos(parsed)
+  }
+
+  const saveMassive = async () => {
+    if (parsedHitos.length === 0) return
+    setSaving('massive')
+    
+    let baseNum = hitos.length
+    const toInsert = parsedHitos.map(h => {
+        baseNum++
+        return { iniciativa_id: id, numero: baseNum, ...h }
+    })
+    
+    const { data } = await supabase.from('hitos').insert(toInsert).select()
+    if (data) {
+        setHitos(prev => [...prev, ...data])
+    }
+    
+    setShowMassiveAdd(false)
+    setMassiveInput('')
+    setParsedHitos([])
+    setSaving(null)
+  }
+
   const deleteHito = async (hitoId: string) => {
     if (!confirm('¿Eliminar este hito?')) return
     await supabase.from('hitos').delete().eq('id', hitoId)
@@ -111,12 +168,20 @@ export default function HitosPage() {
               </p>
             )}
           </div>
-          <button
-            onClick={() => setShowAdd(!showAdd)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition"
-          >
-            + Agregar Hito
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setShowMassiveAdd(!showMassiveAdd); setShowAdd(false) }}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition"
+            >
+              ⚡ Carga Masiva (Excel)
+            </button>
+            <button
+              onClick={() => { setShowAdd(!showAdd); setShowMassiveAdd(false) }}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition"
+            >
+              + Agregar Hito
+            </button>
+          </div>
         </div>
       </div>
 
@@ -196,6 +261,66 @@ export default function HitosPage() {
               Guardar Hito
             </button>
             <button onClick={() => setShowAdd(false)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm rounded-lg transition">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Mass Add Form */}
+      {showMassiveAdd && (
+        <div className="bg-slate-800/70 border border-emerald-500/30 rounded-xl p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-emerald-400">⚡ Carga Masiva desde Excel</h3>
+          <p className="text-xs text-slate-400">
+            Copia filas directamente desde Excel con las siguientes columnas en este orden exacto:<br/>
+            <strong className="text-slate-300">Gate | Descripción | Responsable | Fecha Inicio | Fecha Fin</strong>
+          </p>
+          <textarea
+            value={massiveInput}
+            onChange={e => handleMassiveParse(e.target.value)}
+            placeholder="Pega aquí (Ctrl+V) las celdas directamente desde Excel..."
+            className="w-full h-32 px-3 py-2 bg-slate-900/60 border border-slate-600 rounded-lg text-slate-300 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          />
+          
+          {parsedHitos.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-emerald-400">Vista Previa ({parsedHitos.length} hitos detectados):</p>
+              <div className="max-h-48 overflow-y-auto border border-slate-700/50 rounded-lg bg-slate-900/40">
+                <table className="w-full text-xs">
+                  <thead className="bg-slate-800/80 sticky top-0">
+                    <tr>
+                      <th className="px-2 py-1.5 text-left font-medium text-slate-400">Gate</th>
+                      <th className="px-2 py-1.5 text-left font-medium text-slate-400">Descripción</th>
+                      <th className="px-2 py-1.5 text-left font-medium text-slate-400">Responsable</th>
+                      <th className="px-2 py-1.5 text-left font-medium text-slate-400">F. Inicio</th>
+                      <th className="px-2 py-1.5 text-left font-medium text-slate-400">F. Fin</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-700/50">
+                    {parsedHitos.map((h, i) => (
+                      <tr key={i}>
+                        <td className="px-2 py-1.5 font-bold text-slate-300">{h.gate}</td>
+                        <td className="px-2 py-1.5 text-slate-300 truncate max-w-[200px]" title={h.descripcion}>{h.descripcion}</td>
+                        <td className="px-2 py-1.5 text-slate-400">{h.responsable_texto || '-'}</td>
+                        <td className="px-2 py-1.5 text-slate-400">{h.fecha_inicio_plan || '-'}</td>
+                        <td className="px-2 py-1.5 text-slate-400">{h.fecha_fin_plan || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-2 pt-2">
+            <button 
+              disabled={parsedHitos.length === 0 || saving === 'massive'}
+              onClick={saveMassive} 
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm rounded-lg transition"
+            >
+              {saving === 'massive' ? 'Guardando...' : `Guardar ${parsedHitos.length} Hitos`}
+            </button>
+            <button onClick={() => { setShowMassiveAdd(false); setMassiveInput(''); setParsedHitos([]) }} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm rounded-lg transition">
               Cancelar
             </button>
           </div>
