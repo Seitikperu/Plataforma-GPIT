@@ -226,6 +226,7 @@ export default function KpisPage() {
       <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-slate-700/50 bg-slate-800/80">
           <h3 className="text-sm font-semibold text-slate-300">EBITDA (k$)</h3>
+          <p className="text-xs text-slate-500 mt-0.5">Puedes pegar (Ctrl+V) una fila desde Excel directo en las celdas para carga masiva</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
