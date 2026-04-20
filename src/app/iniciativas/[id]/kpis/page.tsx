@@ -53,34 +53,57 @@ export default function KpisPage() {
     setRows(prev => prev.map(r => r.mes === mes ? { ...r, [field]: value === '' ? null : parseFloat(value) } : r))
   }
 
-  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, startMes: number, field: string) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, startMes: number, startField: string) => {
     e.preventDefault()
     const text = e.clipboardData.getData('text')
-    const rawVals = text.split(/[\t\n]/).map(v => v.trim()).filter(v => v !== '')
+    if (!text) return
     
-    if (rawVals.length > 0) {
-      setRows(prev => {
-        const next = [...prev]
-        for (let i = 0; i < rawVals.length; i++) {
-          const m = startMes + i
-          if (m > 12) break
+    // El orden vertical lógico de la pantalla es:
+    const fieldOrder = ['kpi_plan', 'kpi_real', 'ebitda_plan_k', 'ebitda_real_k'] as const
+    const startFieldIndex = fieldOrder.indexOf(startField as any)
+    if (startFieldIndex === -1) return
+    
+    const rowsText = text.split(/\r?\n/).filter(line => line.trim() !== '')
+    
+    setRows(prev => {
+      const next = [...prev]
+      
+      rowsText.forEach((rowText, rowIdx) => {
+        const targetFieldIndex = startFieldIndex + rowIdx
+        if (targetFieldIndex >= fieldOrder.length) return // Ignorar filas extras si copian de más
+        
+        const targetField = fieldOrder[targetFieldIndex]
+        
+        // Bloqueo de seguridad: No sobreescribir plan si está fijo y no es admin
+        if (targetField === 'kpi_plan' && hasKpiPlan && !isAdmin) return
+        if (targetField === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin) return
+        
+        const cols = rowText.split(/\t/)
+        cols.forEach((colText, colIdx) => {
+          const m = startMes + colIdx
+          if (m > 12) return
           
-          let cleaned = rawVals[i].replace(/[S/$\s]/g, '')
-          if (cleaned.match(/^[0-9.]+,[0-9]+$/)) {
-            cleaned = cleaned.replace(/\./g, '').replace(',', '.')
+          let cleaned = colText.replace(/[S/$\\s]/g, '').trim()
+          if (cleaned === '' || cleaned === '-') return // Ignorar vacíos o guiones
+          
+          // Formato europeo 1.000,50 -> 1000.50
+          if (cleaned.match(/^-?[0-9.]+,[0-9]+$/)) {
+            cleaned = cleaned.replace(/\\./g, '').replace(',', '.')
           } else {
             cleaned = cleaned.replace(/,/g, '')
           }
           const val = parseFloat(cleaned)
           
-          const targetIndex = next.findIndex(r => r.mes === m)
-          if (targetIndex !== -1 && !isNaN(val)) {
-            next[targetIndex] = { ...next[targetIndex], [field]: val }
+          if (!isNaN(val)) {
+            const targetRowIndex = next.findIndex(r => r.mes === m)
+            if (targetRowIndex !== -1) {
+              next[targetRowIndex] = { ...next[targetRowIndex], [targetField]: val }
+            }
           }
-        }
-        return next
+        })
       })
-    }
+      return next
+    })
   }
 
   const handleSave = async () => {
