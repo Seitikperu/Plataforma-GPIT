@@ -23,6 +23,10 @@ export default function KpisPage() {
   const [saved, setSaved] = useState(false)
   const [hasKpiPlan, setHasKpiPlan] = useState(false)
   const [hasEbitdaPlan, setHasEbitdaPlan] = useState(false)
+  const [showMassiveAdd, setShowMassiveAdd] = useState(false)
+  const [massiveInput, setMassiveInput] = useState('')
+  const [massiveTarget, setMassiveTarget] = useState<string>('kpi_plan')
+  const [parsedMassive, setParsedMassive] = useState<(number | null)[]>(Array(12).fill(null))
 
   const loadData = useCallback(async () => {
     const [{ data: ini }, { data: kpis }] = await Promise.all([
@@ -106,6 +110,54 @@ export default function KpisPage() {
     })
   }
 
+  const handleMassiveParse = (text: string) => {
+    setMassiveInput(text)
+    const textLines = text.split(/\r?\n/).filter(line => line.trim() !== '')
+    if (textLines.length === 0) {
+      setParsedMassive(Array(12).fill(null))
+      return
+    }
+    const cols = textLines[0].split(/\t/)
+    const parsed: (number | null)[] = Array(12).fill(null)
+    
+    cols.forEach((colText, i) => {
+      if (i >= 12) return
+      let cleaned = colText.replace(/[S/$\\s]/g, '').trim()
+      if (cleaned === '' || cleaned === '-') return
+      
+      if (cleaned.match(/^-?[0-9.]+,[0-9]+$/)) {
+        cleaned = cleaned.replace(/\./g, '').replace(',', '.')
+      } else {
+        cleaned = cleaned.replace(/,/g, '')
+      }
+      const val = parseFloat(cleaned)
+      if (!isNaN(val)) parsed[i] = val
+    })
+    setParsedMassive(parsed)
+  }
+
+  const applyMassive = () => {
+    if (massiveTarget === 'kpi_plan' && hasKpiPlan && !isAdmin) {
+      alert('El KPI Plan ya está fijado y no tienes permisos de administrador.')
+      return
+    }
+    if (massiveTarget === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin) {
+      alert('El EBITDA Plan ya está fijado y no tienes permisos de administrador.')
+      return
+    }
+
+    setRows(prev => prev.map((r, i) => {
+      if (parsedMassive[i] !== null) {
+        return { ...r, [massiveTarget]: parsedMassive[i] }
+      }
+      return r
+    }))
+    
+    setShowMassiveAdd(false)
+    setMassiveInput('')
+    setParsedMassive(Array(12).fill(null))
+  }
+
   const handleSave = async () => {
     setSaving(true)
     const toUpsert = rows
@@ -142,6 +194,12 @@ export default function KpisPage() {
             )}
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowMassiveAdd(!showMassiveAdd)}
+              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition flex items-center gap-2"
+            >
+              ⚡ Carga Masiva (Excel)
+            </button>
             <div className="flex items-center gap-1 bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
               <button onClick={() => setAnio(a => a - 1)} className="px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-700 transition text-sm">‹</button>
               <span className="px-3 text-sm font-medium text-white">{anio}</span>
@@ -157,6 +215,73 @@ export default function KpisPage() {
           </div>
         </div>
       </div>
+
+      {showMassiveAdd && (
+        <div className="bg-slate-800/70 border border-emerald-500/30 rounded-xl p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-emerald-400">⚡ Carga Masiva desde Excel</h3>
+          
+          <div className="flex gap-4 items-center">
+            <label className="text-xs text-slate-400">Selecciona el concepto destino:</label>
+            <select 
+              value={massiveTarget}
+              onChange={e => setMassiveTarget(e.target.value)}
+              className="px-3 py-1.5 bg-slate-900/60 border border-slate-600 rounded-lg text-slate-300 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            >
+              <option value="kpi_plan">KPI Principal (Plan)</option>
+              <option value="kpi_real">KPI Principal (Real)</option>
+              <option value="ebitda_plan_k">EBITDA k$ (Plan)</option>
+              <option value="ebitda_real_k">EBITDA k$ (Real)</option>
+            </select>
+          </div>
+
+          <p className="text-xs text-slate-400">
+            Copia <strong>1 fila con 12 columnas (Ene a Dic)</strong> desde Excel y pégala aquí:
+          </p>
+          <textarea
+            value={massiveInput}
+            onChange={e => handleMassiveParse(e.target.value)}
+            placeholder="Pega aquí (Ctrl+V) las celdas directamente desde Excel..."
+            className="w-full h-20 px-3 py-2 bg-slate-900/60 border border-slate-600 rounded-lg text-slate-300 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          />
+          
+          {parsedMassive.some(val => val !== null) && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-emerald-400">Vista Previa:</p>
+              <div className="overflow-x-auto border border-slate-700/50 rounded-lg bg-slate-900/40">
+                <table className="w-full text-xs min-w-max">
+                  <thead className="bg-slate-800/80">
+                    <tr>
+                      {MESES.map(m => <th key={m} className="px-2 py-1.5 text-center font-medium text-slate-400 w-16">{m}</th>)}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-700/50">
+                    <tr>
+                      {parsedMassive.map((val, i) => (
+                        <td key={i} className="px-2 py-2 text-center text-slate-300 font-mono">
+                          {val !== null ? val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 }) : '-'}
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-2 pt-2">
+            <button 
+              disabled={!parsedMassive.some(val => val !== null)}
+              onClick={applyMassive} 
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition"
+            >
+              Aplicar a la tabla
+            </button>
+            <button onClick={() => { setShowMassiveAdd(false); setMassiveInput(''); setParsedMassive(Array(12).fill(null)) }} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-medium rounded-lg transition">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Tabla KPI */}
       <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
