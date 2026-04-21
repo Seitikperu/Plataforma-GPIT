@@ -192,3 +192,15 @@ function Field({ label, children, required }: { label: string; children: React.R
     </div>
   )
 }
+
+function Input({ className = '', ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
+  return <input className={`${inputClass} ${className}`} {...props} />
+}
+
+function Select({ children, disabled, ...props }: React.SelectHTMLAttributes<HTMLSelectElement> & { children: React.ReactNode }) {
+  return (
+    <select className={`${selectClass} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={disabled} {...props}>
+      {children}
+    </select>
+  )
+}
