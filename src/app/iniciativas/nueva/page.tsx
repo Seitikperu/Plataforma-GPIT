@@ -108,11 +108,11 @@ export default function NuevaIniciativaPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <div className="mb-6">
-        <button onClick={() => router.back()} className="text-sm text-slate-400 hover:text-slate-200 flex items-center gap-1 mb-4 transition">
+        <button onClick={() => router.back()} className="text-sm font-medium text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-4 transition">
           ← Volver
         </button>
-        <h1 className="text-2xl font-bold text-white">Nueva Iniciativa</h1>
-        <p className="text-slate-400 text-sm mt-1">Completa la información básica para registrar la iniciativa en el funnel GPIT</p>
+        <h1 className="text-2xl font-bold text-slate-900">Nueva Iniciativa</h1>
+        <p className="text-slate-600 text-sm mt-1 mb-2">Completa la información básica para registrar la iniciativa en el funnel GPIT</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -207,9 +207,9 @@ export default function NuevaIniciativaPage() {
                 id="presupuesto"
                 checked={form.incluido_presupuesto}
                 onChange={e => setForm(f => ({ ...f, incluido_presupuesto: e.target.checked }))}
-                className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500"
+                className="w-4 h-4 rounded border-slate-300 bg-slate-100 text-blue-600 focus:ring-blue-500"
               />
-              <label htmlFor="presupuesto" className="text-sm text-slate-300">Incluido en presupuesto</label>
+              <label htmlFor="presupuesto" className="text-sm font-medium text-slate-700">Incluido en presupuesto</label>
             </div>
           </div>
         </Section>
@@ -284,14 +284,14 @@ export default function NuevaIniciativaPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-medium rounded-lg transition"
+            className="flex-1 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-bold rounded-lg transition"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
+            className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-bold rounded-lg transition"
           >
             {loading ? 'Guardando...' : 'Crear Iniciativa'}
           </button>
@@ -301,13 +301,13 @@ export default function NuevaIniciativaPage() {
   )
 }
 
-const inputClass = 'w-full px-3 py-2.5 bg-slate-900/60 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition'
+const inputClass = 'w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:border-blue-500 focus:ring-blue-500 transition'
 const selectClass = `${inputClass} cursor-pointer`
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 space-y-4">
-      <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">{title}</h3>
+    <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5 space-y-4">
+      <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">{title}</h3>
       {children}
     </div>
   )
@@ -316,8 +316,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({ label, children, required }: { label: string; children: React.ReactNode; required?: boolean }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-slate-400 mb-1.5">
-        {label}{required && <span className="text-red-400 ml-0.5">*</span>}
+      <label className="block text-xs font-bold text-slate-600 mb-1.5">
+        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
       {children}
     </div>

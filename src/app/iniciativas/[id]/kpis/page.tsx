@@ -180,15 +180,15 @@ export default function KpisPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-5">
       <div>
-        <button onClick={() => router.back()} className="text-sm text-slate-400 hover:text-slate-200 flex items-center gap-1 mb-4 transition">
+        <button onClick={() => router.back()} className="text-sm text-slate-600 hover:text-slate-900 flex items-center gap-1 mb-4 transition">
           ← Volver
         </button>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-white">Seguimiento KPI Mensual</h1>
+            <h1 className="text-xl font-bold text-slate-900">Seguimiento KPI Mensual</h1>
             {iniciativa && (
-              <p className="text-slate-400 text-sm mt-1">
-                <span className="font-mono text-blue-400">{iniciativa.codigo}</span> · {iniciativa.titulo}
+              <p className="text-slate-600 text-sm mt-1">
+                <span className="font-mono text-blue-600 font-semibold">{iniciativa.codigo}</span> · {iniciativa.titulo}
                 {iniciativa.kpi_unidad && <span className="ml-2 text-slate-500">· KPI: {iniciativa.kpi_unidad}</span>}
               </p>
             )}
@@ -196,14 +196,14 @@ export default function KpisPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowMassiveAdd(!showMassiveAdd)}
-              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition flex items-center gap-2"
+              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-medium rounded-lg transition flex items-center gap-2"
             >
               ⚡ Carga Masiva (Excel)
             </button>
-            <div className="flex items-center gap-1 bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
-              <button onClick={() => setAnio(a => a - 1)} className="px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-700 transition text-sm">‹</button>
-              <span className="px-3 text-sm font-medium text-white">{anio}</span>
-              <button onClick={() => setAnio(a => a + 1)} className="px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-700 transition text-sm">›</button>
+            <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg overflow-hidden shadow-sm">
+              <button onClick={() => setAnio(a => a - 1)} className="px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition text-sm">‹</button>
+              <span className="px-3 text-sm font-medium text-slate-900">{anio}</span>
+              <button onClick={() => setAnio(a => a + 1)} className="px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition text-sm">›</button>
             </div>
             <button
               onClick={handleSave}
@@ -217,15 +217,15 @@ export default function KpisPage() {
       </div>
 
       {showMassiveAdd && (
-        <div className="bg-slate-800/70 border border-emerald-500/30 rounded-xl p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-emerald-400">⚡ Carga Masiva desde Excel</h3>
+        <div className="bg-slate-50 border border-emerald-200 rounded-xl p-5 space-y-4 shadow-sm">
+          <h3 className="text-sm font-semibold text-emerald-700">⚡ Carga Masiva desde Excel</h3>
           
           <div className="flex gap-4 items-center">
-            <label className="text-xs text-slate-400">Selecciona el concepto destino:</label>
+            <label className="text-xs text-slate-600">Selecciona el concepto destino:</label>
             <select 
               value={massiveTarget}
               onChange={e => setMassiveTarget(e.target.value)}
-              className="px-3 py-1.5 bg-slate-900/60 border border-slate-600 rounded-lg text-slate-300 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
             >
               <option value="kpi_plan">KPI Principal (Plan)</option>
               <option value="kpi_real">KPI Principal (Real)</option>
@@ -234,30 +234,30 @@ export default function KpisPage() {
             </select>
           </div>
 
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-600">
             Copia <strong>1 fila con 12 columnas (Ene a Dic)</strong> desde Excel y pégala aquí:
           </p>
           <textarea
             value={massiveInput}
             onChange={e => handleMassiveParse(e.target.value)}
             placeholder="Pega aquí (Ctrl+V) las celdas directamente desde Excel..."
-            className="w-full h-20 px-3 py-2 bg-slate-900/60 border border-slate-600 rounded-lg text-slate-300 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            className="w-full h-20 px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
           />
           
           {parsedMassive.some(val => val !== null) && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold text-emerald-400">Vista Previa:</p>
-              <div className="overflow-x-auto border border-slate-700/50 rounded-lg bg-slate-900/40">
+              <p className="text-xs font-semibold text-emerald-700">Vista Previa:</p>
+              <div className="overflow-x-auto border border-slate-200 rounded-lg bg-white">
                 <table className="w-full text-xs min-w-max">
-                  <thead className="bg-slate-800/80">
+                  <thead className="bg-slate-100 border-b border-slate-200">
                     <tr>
-                      {MESES.map(m => <th key={m} className="px-2 py-1.5 text-center font-medium text-slate-400 w-16">{m}</th>)}
+                      {MESES.map(m => <th key={m} className="px-2 py-1.5 text-center font-semibold text-slate-700 w-16">{m}</th>)}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-700/50">
+                  <tbody className="divide-y divide-slate-100">
                     <tr>
                       {parsedMassive.map((val, i) => (
-                        <td key={i} className="px-2 py-2 text-center text-slate-300 font-mono">
+                        <td key={i} className="px-2 py-2 text-center text-slate-900 font-mono bg-slate-50">
                           {val !== null ? val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 }) : '-'}
                         </td>
                       ))}
@@ -272,11 +272,11 @@ export default function KpisPage() {
             <button 
               disabled={!parsedMassive.some(val => val !== null)}
               onClick={applyMassive} 
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition"
             >
               Aplicar a la tabla
             </button>
-            <button onClick={() => { setShowMassiveAdd(false); setMassiveInput(''); setParsedMassive(Array(12).fill(null)) }} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-medium rounded-lg transition">
+            <button onClick={() => { setShowMassiveAdd(false); setMassiveInput(''); setParsedMassive(Array(12).fill(null)) }} className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-medium rounded-lg transition">
               Cerrar
             </button>
           </div>
@@ -284,27 +284,27 @@ export default function KpisPage() {
       )}
 
       {/* Tabla KPI */}
-      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-slate-700/50 bg-slate-800/80">
-          <h3 className="text-sm font-semibold text-slate-300">KPI Principal</h3>
+      <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
+        <div className="px-5 py-3 border-b border-slate-200 bg-slate-50">
+          <h3 className="text-sm font-bold text-slate-800">KPI Principal</h3>
           <p className="text-xs text-slate-500 mt-0.5">Puedes pegar (Ctrl+V) una fila desde Excel directo en las celdas para carga masiva</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700/50">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider sticky left-0 bg-slate-800/80 w-28">Concepto</th>
+              <tr className="border-b border-slate-200">
+                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider sticky left-0 bg-slate-50 w-28">Concepto</th>
                 {MESES.map(m => (
-                  <th key={m} className="px-2 py-3 text-center text-xs font-semibold text-slate-400 uppercase w-20">{m}</th>
+                  <th key={m} className="px-2 py-3 text-center text-xs font-bold text-slate-700 uppercase w-20 bg-slate-50">{m}</th>
                 ))}
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-400 uppercase w-24">Total</th>
+                <th className="px-4 py-3 text-center text-xs font-bold text-slate-700 uppercase w-24 bg-slate-50">Total</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-slate-700/30">
-                <td className="px-4 py-3 text-xs font-medium text-slate-400 sticky left-0 bg-slate-800/50">Plan</td>
+              <tr className="border-b border-slate-100">
+                <td className="px-4 py-3 text-xs font-semibold text-slate-600 sticky left-0 bg-white">Plan</td>
                 {rows.map(r => (
-                  <td key={r.mes} className="px-2 py-2 text-center">
+                  <td key={r.mes} className="px-2 py-2 text-center bg-white">
                     <input
                       type="number" step="0.01"
                       value={r.kpi_plan ?? ''}
@@ -313,32 +313,32 @@ export default function KpisPage() {
                       disabled={hasKpiPlan && !isAdmin}
                       title={hasKpiPlan && !isAdmin ? "El plan ya fijó valores. Solicita apoyo a un Administrador." : ""}
                       className={`w-16 px-1.5 py-1 border rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500
-                        ${hasKpiPlan && !isAdmin ? 'bg-slate-800/80 border-slate-700/50 text-slate-500 cursor-not-allowed' : 'bg-slate-900/60 border-slate-600 text-slate-300'}`}
+                        ${hasKpiPlan && !isAdmin ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed' : 'bg-white border-slate-300 text-slate-900 font-medium'}`}
                       placeholder="—"
                     />
                   </td>
                 ))}
-                <td className="px-4 py-3 text-center text-xs font-semibold text-slate-300">{totalPlan.toFixed(2)}</td>
+                <td className="px-4 py-3 text-center text-xs font-bold text-slate-800 bg-white">{totalPlan.toFixed(2)}</td>
               </tr>
-              <tr className="border-b border-slate-700/30">
-                <td className="px-4 py-3 text-xs font-medium text-slate-400 sticky left-0 bg-slate-800/50">Real</td>
+              <tr className="border-b border-slate-100">
+                <td className="px-4 py-3 text-xs font-semibold text-slate-600 sticky left-0 bg-white">Real</td>
                 {rows.map(r => {
                   const diff = r.kpi_plan != null && r.kpi_real != null ? r.kpi_real - r.kpi_plan : null
                   return (
-                    <td key={r.mes} className="px-2 py-2 text-center">
+                    <td key={r.mes} className="px-2 py-2 text-center bg-white">
                       <input
                         type="number" step="0.01"
                         value={r.kpi_real ?? ''}
                         onChange={e => updateRow(r.mes, 'kpi_real', e.target.value)}
                         onPaste={e => handlePaste(e, r.mes, 'kpi_real')}
-                        className={`w-16 px-1.5 py-1 border rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500
-                          ${diff != null ? (diff >= 0 ? 'bg-emerald-900/30 border-emerald-700/50 text-emerald-300' : 'bg-red-900/30 border-red-700/50 text-red-300') : 'bg-slate-900/60 border-slate-600 text-slate-300'}`}
+                        className={`w-16 px-1.5 py-1 border rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium
+                          ${diff != null ? (diff >= 0 ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700') : 'bg-white border-slate-300 text-slate-900'}`}
                         placeholder="—"
                       />
                     </td>
                   )
                 })}
-                <td className={`px-4 py-3 text-center text-xs font-semibold ${totalReal >= totalPlan ? 'text-emerald-400' : 'text-red-400'}`}>
+                <td className={`px-4 py-3 text-center text-xs font-bold bg-white ${totalReal >= totalPlan ? 'text-emerald-600' : 'text-red-600'}`}>
                   {totalReal.toFixed(2)}
                 </td>
               </tr>
@@ -348,30 +348,30 @@ export default function KpisPage() {
       </div>
 
       {/* Tabla EBITDA */}
-      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-slate-700/50 bg-slate-800/80">
-          <h3 className="text-sm font-semibold text-slate-300">EBITDA (k$)</h3>
+      <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
+        <div className="px-5 py-3 border-b border-slate-200 bg-slate-50">
+          <h3 className="text-sm font-bold text-slate-800">EBITDA (k$)</h3>
           <p className="text-xs text-slate-500 mt-0.5">Puedes pegar (Ctrl+V) una fila desde Excel directo en las celdas para carga masiva</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700/50">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider sticky left-0 bg-slate-800/80 w-28">Concepto</th>
+              <tr className="border-b border-slate-200">
+                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider sticky left-0 bg-slate-50 w-28">Concepto</th>
                 {MESES.map(m => (
-                  <th key={m} className="px-2 py-3 text-center text-xs font-semibold text-slate-400 uppercase w-20">{m}</th>
+                  <th key={m} className="px-2 py-3 text-center text-xs font-bold text-slate-700 uppercase w-20 bg-slate-50">{m}</th>
                 ))}
-                <th className="px-4 py-3 text-center text-xs font-semibold text-slate-400 uppercase w-24">Total</th>
+                <th className="px-4 py-3 text-center text-xs font-bold text-slate-700 uppercase w-24 bg-slate-50">Total</th>
               </tr>
             </thead>
             <tbody>
               {(['ebitda_plan_k', 'ebitda_real_k'] as const).map((field, idx) => (
-                <tr key={field} className="border-b border-slate-700/30">
-                  <td className="px-4 py-3 text-xs font-medium text-slate-400 sticky left-0 bg-slate-800/50">
+                <tr key={field} className="border-b border-slate-100">
+                  <td className="px-4 py-3 text-xs font-semibold text-slate-600 sticky left-0 bg-white">
                     {idx === 0 ? 'Plan' : 'Real'}
                   </td>
                   {rows.map(r => (
-                    <td key={r.mes} className="px-2 py-2 text-center">
+                    <td key={r.mes} className="px-2 py-2 text-center bg-white">
                       <input
                         type="number" step="0.001"
                         value={r[field] ?? ''}
@@ -379,13 +379,13 @@ export default function KpisPage() {
                         onPaste={e => handlePaste(e, r.mes, field)}
                         disabled={field === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin}
                         title={field === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin ? "El plan ya fijó valores. Solicita apoyo a un Administrador." : ""}
-                        className={`w-16 px-1.5 py-1 border rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500
-                          ${field === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin ? 'bg-slate-800/80 border-slate-700/50 text-slate-500 cursor-not-allowed' : 'bg-slate-900/60 border-slate-600 text-slate-300'}`}
+                        className={`w-16 px-1.5 py-1 border rounded text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium
+                          ${field === 'ebitda_plan_k' && hasEbitdaPlan && !isAdmin ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed' : 'bg-white border-slate-300 text-slate-900'}`}
                         placeholder="—"
                       />
                     </td>
                   ))}
-                  <td className="px-4 py-3 text-center text-xs font-semibold text-slate-300">
+                  <td className="px-4 py-3 text-center text-xs font-bold text-slate-800 bg-white">
                     {(idx === 0 ? totalEbitdaPlan : totalEbitdaReal).toFixed(3)}
                   </td>
                 </tr>

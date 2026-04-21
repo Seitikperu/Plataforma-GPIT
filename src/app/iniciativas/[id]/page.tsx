@@ -50,9 +50,9 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-500">
-        <Link href="/iniciativas" className="hover:text-slate-300 transition">Iniciativas</Link>
+        <Link href="/iniciativas" className="hover:text-slate-800 transition">Iniciativas</Link>
         <span>/</span>
-        <span className="text-slate-300 font-mono">{ini.codigo}</span>
+        <span className="text-slate-800 font-mono">{ini.codigo}</span>
       </div>
 
       {/* Header */}
@@ -68,26 +68,26 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
               {semaforoLabels[semaforo]}
             </div>
             <span className={`text-xs px-2.5 py-1 rounded-lg font-medium
-              ${ini.estado === 'Activa' ? 'bg-blue-500/10 text-blue-400' : 'bg-slate-700 text-slate-400'}`}>
+              ${ini.estado === 'Activa' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
               {ini.estado}
             </span>
             {ini.origen && (
-              <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-700/50 text-slate-400">{ini.origen}</span>
+              <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">{ini.origen}</span>
             )}
           </div>
-          <h1 className="text-xl font-bold text-white leading-snug">{ini.titulo}</h1>
-          <p className="text-slate-400 text-sm mt-1 font-mono">{ini.codigo}</p>
+          <h1 className="text-xl font-bold text-slate-900 leading-snug">{ini.titulo}</h1>
+          <p className="text-slate-600 text-sm mt-1 font-mono font-medium">{ini.codigo}</p>
         </div>
         <div className="flex gap-2 flex-shrink-0">
           <Link
             href={`/iniciativas/${id}/hitos`}
-            className="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm rounded-lg transition"
+            className="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-medium rounded-lg transition"
           >
             Plan Master
           </Link>
           <Link
             href={`/iniciativas/${id}/editar`}
-            className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-lg transition"
+            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
           >
             Editar
           </Link>
@@ -95,8 +95,8 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
       </div>
 
       {/* Gate Progress */}
-      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Progreso por Gate</p>
+      <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Progreso por Gate</p>
         <div className="flex items-center gap-1">
           {GATES_ORDER.map((gate, idx) => {
             const gateIdx = GATES_ORDER.indexOf(ini.gate_actual as Gate)
@@ -108,12 +108,12 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
             return (
               <div key={gate} className="flex-1 flex flex-col items-center gap-1.5">
                 <div className={`w-full h-1.5 rounded-full ${idx === 0 ? 'rounded-l-full' : ''} ${idx === 5 ? 'rounded-r-full' : ''}
-                  ${isPassed ? 'bg-blue-500' : isCurrent ? 'bg-blue-400' : 'bg-slate-700'}`} />
+                  ${isPassed ? 'bg-blue-500' : isCurrent ? 'bg-blue-400' : 'bg-slate-200'}`} />
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2
-                  ${isPassed ? 'bg-blue-600 border-blue-500 text-white' : isCurrent ? 'bg-blue-500 border-blue-400 text-white ring-2 ring-blue-400/30' : 'bg-slate-800 border-slate-600 text-slate-500'}`}>
+                  ${isPassed ? 'bg-blue-600 border-blue-600 text-white' : isCurrent ? 'bg-blue-500 border-blue-500 text-white ring-2 ring-blue-200' : 'bg-slate-100 border-slate-300 text-slate-400'}`}>
                   {isPassed ? '✓' : gate.replace('L', '')}
                 </div>
-                <span className={`text-xs ${isCurrent ? 'text-blue-400 font-semibold' : 'text-slate-600'}`}>{gate}</span>
+                <span className={`text-[11px] uppercase ${isCurrent ? 'text-blue-600 font-bold' : 'text-slate-600 font-semibold'}`}>{gate}</span>
                 {fecha && (
                   <span className="text-xs text-slate-600">
                     {new Date(fecha).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}
@@ -131,31 +131,31 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
         <div className="lg:col-span-2 space-y-5">
           {/* Descripción */}
           {(ini.contexto || ini.objetivo) && (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 space-y-4">
+            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5 space-y-4">
               {ini.contexto && (
                 <div>
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Contexto</p>
-                  <p className="text-sm text-slate-300 leading-relaxed">{ini.contexto}</p>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Contexto</p>
+                  <p className="text-sm text-slate-800 leading-relaxed">{ini.contexto}</p>
                 </div>
               )}
               {ini.objetivo && (
                 <div>
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Objetivo</p>
-                  <p className="text-sm text-slate-300 leading-relaxed">{ini.objetivo}</p>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Objetivo</p>
+                  <p className="text-sm text-slate-800 leading-relaxed">{ini.objetivo}</p>
                 </div>
               )}
               {ini.riesgos && (
                 <div>
-                  <p className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1.5">⚠ Riesgos / Premisas</p>
-                  <p className="text-sm text-slate-300 leading-relaxed">{ini.riesgos}</p>
+                  <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1.5">⚠ Riesgos / Premisas</p>
+                  <p className="text-sm text-slate-800 leading-relaxed">{ini.riesgos}</p>
                 </div>
               )}
             </div>
           )}
 
           {/* Impacto Financiero */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Impacto Financiero</p>
+          <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Impacto Financiero</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
               <MetricBox label="Plan Año (M$)" value={`$${ini.plan_anual_m?.toFixed(2)}M`} />
               <MetricBox label="Real Acum. (M$)" value={`$${ini.real_acumulado_m?.toFixed(2)}M`} />
@@ -169,11 +169,11 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
 
             {/* Barra progreso */}
             <div>
-              <div className="flex justify-between text-xs text-slate-400 mb-1.5">
+              <div className="flex justify-between text-xs font-medium text-slate-600 mb-1.5">
                 <span>Ejecución Plan vs Real</span>
                 <span>{ejecPct}%</span>
               </div>
-              <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden shadow-inner">
                 <div
                   className={`h-full rounded-full transition-all duration-700 ${ejecPct >= 90 ? 'bg-emerald-500' : ejecPct >= 70 ? 'bg-amber-500' : 'bg-red-500'}`}
                   style={{ width: `${Math.min(ejecPct, 100)}%` }}
@@ -184,37 +184,37 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
 
           {/* KPI Mensual */}
           {kpisAnio.length > 0 && (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                   KPI Mensual {currentYear} {ini.kpi_unidad && `· ${ini.kpi_unidad}`}
                 </p>
-                <Link href={`/iniciativas/${id}/kpis`} className="text-xs text-blue-400 hover:text-blue-300">Ver todo →</Link>
+                <Link href={`/iniciativas/${id}/kpis`} className="text-xs font-medium text-blue-600 hover:text-blue-800">Ver todo →</Link>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>
                     <tr>
-                      <td className="pb-2 text-slate-500 pr-3">Mes</td>
+                      <td className="pb-2 text-slate-600 font-semibold pr-3 border-b border-slate-200">Mes</td>
                       {kpisAnio.map(k => (
-                        <td key={k.mes} className="pb-2 text-slate-400 text-center font-medium w-10">{meses[k.mes - 1]}</td>
+                        <td key={k.mes} className="pb-2 text-slate-600 font-semibold text-center w-10 border-b border-slate-200">{meses[k.mes - 1]}</td>
                       ))}
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-slate-100">
                     <tr>
-                      <td className="py-1 text-slate-500 pr-3">Plan</td>
+                      <td className="py-2 text-slate-500 pr-3 font-medium">Plan</td>
                       {kpisAnio.map(k => (
-                        <td key={k.mes} className="py-1 text-center text-slate-300">{k.kpi_plan?.toFixed(1) ?? '-'}</td>
+                        <td key={k.mes} className="py-2 text-center text-slate-800 bg-slate-50">{k.kpi_plan?.toFixed(1) ?? '-'}</td>
                       ))}
                     </tr>
                     <tr>
-                      <td className="py-1 text-slate-500 pr-3">Real</td>
+                      <td className="py-2 text-slate-500 pr-3 font-medium">Real</td>
                       {kpisAnio.map(k => (
-                        <td key={k.mes} className="py-1 text-center">
+                        <td key={k.mes} className="py-2 text-center font-bold">
                           <span className={k.kpi_real != null
-                            ? (k.kpi_real >= (k.kpi_plan ?? 0) ? 'text-emerald-400' : 'text-red-400')
-                            : 'text-slate-600'}>
+                            ? (k.kpi_real >= (k.kpi_plan ?? 0) ? 'text-emerald-600' : 'text-red-600')
+                            : 'text-slate-400 font-normal'}>
                             {k.kpi_real?.toFixed(1) ?? '-'}
                           </span>
                         </td>
@@ -228,12 +228,12 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
 
           {/* Hitos recientes */}
           {hitosOrdenados.length > 0 && (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                   Plan Master · {hitosCompletados}/{hitosTotal} hitos
                 </p>
-                <Link href={`/iniciativas/${id}/hitos`} className="text-xs text-blue-400 hover:text-blue-300">Ver todo →</Link>
+                <Link href={`/iniciativas/${id}/hitos`} className="text-xs font-medium text-blue-600 hover:text-blue-800">Ver todo →</Link>
               </div>
               <div className="space-y-2">
                 {hitosOrdenados.slice(0, 6).map(hito => (
@@ -247,8 +247,8 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
         {/* Right - Sidebar info */}
         <div className="space-y-5">
           {/* Responsables */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Responsables</p>
+          <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Responsables</p>
             <div className="space-y-3">
               {ini.lider && (
                 <InfoRow label="Líder" value={`${(ini.lider as {nombre: string; apellido: string}).nombre} ${(ini.lider as {nombre: string; apellido: string; cargo?: string}).apellido}`}
@@ -263,8 +263,8 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
           </div>
 
           {/* Clasificación */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Clasificación</p>
+          <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Clasificación</p>
             <div className="space-y-3">
               {ini.tipo_iniciativa && <InfoRow label="Tipo" value={ini.tipo_iniciativa} />}
               {ini.categoria_general && <InfoRow label="Categoría" value={ini.categoria_general} />}
@@ -276,9 +276,9 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
 
           {/* KPI Base */}
           {ini.kpi_unidad && (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">KPI Principal</p>
-              <p className="text-sm text-slate-300 font-medium mb-3">{ini.kpi_unidad}</p>
+            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">KPI Principal</p>
+              <p className="text-sm text-slate-900 font-bold mb-3">{ini.kpi_unidad}</p>
               <div className="grid grid-cols-2 gap-3">
                 {ini.kpi_base != null && <MetricBox label="Línea Base" value={ini.kpi_base.toFixed(2)} />}
                 {ini.kpi_plan != null && <MetricBox label="Meta" value={ini.kpi_plan.toFixed(2)} />}
@@ -288,13 +288,13 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
 
           {/* Próximos Pasos */}
           {(ini.proximos_pasos || ini.solicitud_apoyo) && (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Próximos Pasos</p>
-              {ini.proximos_pasos && <p className="text-sm text-slate-300 leading-relaxed">{ini.proximos_pasos}</p>}
+            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Próximos Pasos</p>
+              {ini.proximos_pasos && <p className="text-sm text-slate-800 leading-relaxed">{ini.proximos_pasos}</p>}
               {ini.solicitud_apoyo && (
-                <div className="mt-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                  <p className="text-xs font-semibold text-amber-400 mb-1">Solicitud de Apoyo</p>
-                  <p className="text-sm text-slate-300">{ini.solicitud_apoyo}</p>
+                <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-xs font-bold text-amber-700 mb-1">Solicitud de Apoyo</p>
+                  <p className="text-sm text-amber-900">{ini.solicitud_apoyo}</p>
                 </div>
               )}
             </div>
@@ -302,17 +302,17 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
 
           {/* Bitácora */}
           {actualizaciones.length > 0 && (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Actividad Reciente</p>
+            <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Actividad Reciente</p>
               <div className="space-y-3">
                 {actualizaciones.slice(0, 5).map(act => (
                   <div key={act.id} className="flex gap-2.5">
-                    <div className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <span className="text-xs">{act.tipo === 'cambio_gate' ? '🔄' : act.tipo === 'alerta' ? '⚠' : '💬'}</span>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-300">{act.contenido}</p>
-                      <p className="text-xs text-slate-600 mt-0.5">
+                      <p className="text-xs text-slate-800">{act.contenido}</p>
+                      <p className="text-xs text-slate-500 mt-0.5 font-medium">
                         {act.autor ? `${act.autor.nombre} · ` : ''}
                         {new Date(act.created_at).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: '2-digit' })}
                       </p>
@@ -330,11 +330,11 @@ export default async function IniciativaDetailPage({ params }: PageProps) {
 
 function MetricBox({ label, value, color }: { label: string; value: string; color?: string }) {
   const colors: Record<string, string> = {
-    emerald: 'text-emerald-400', amber: 'text-amber-400', red: 'text-red-400', default: 'text-white'
+    emerald: 'text-emerald-700', amber: 'text-amber-700', red: 'text-red-700', default: 'text-slate-900'
   }
   return (
-    <div className="bg-slate-900/50 border border-slate-700/30 rounded-lg p-3">
-      <p className="text-xs text-slate-500 mb-1">{label}</p>
+    <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 shadow-inner">
+      <p className="text-xs font-semibold text-slate-500 mb-1">{label}</p>
       <p className={`text-lg font-bold ${colors[color ?? 'default']}`}>{value}</p>
     </div>
   )
@@ -343,39 +343,40 @@ function MetricBox({ label, value, color }: { label: string; value: string; colo
 function InfoRow({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div>
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="text-sm text-slate-200 font-medium mt-0.5">{value}</p>
-      {sub && <p className="text-xs text-slate-500">{sub}</p>}
+      <p className="text-xs font-medium text-slate-500">{label}</p>
+      <p className="text-sm text-slate-900 font-bold mt-0.5">{value}</p>
+      {sub && <p className="text-xs text-slate-600">{sub}</p>}
     </div>
   )
 }
 
 function HitoRow({ hito }: { hito: Hito }) {
   const statusColors: Record<string, string> = {
-    Completado: 'text-emerald-400',
-    'En Ejecución': 'text-blue-400',
-    'Fuera de Fecha': 'text-red-400',
-    'En Riesgo': 'text-amber-400',
-    Pendiente: 'text-slate-500',
+    Completado: 'text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded',
+    'En Ejecución': 'text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded',
+    'Fuera de Fecha': 'text-red-600 bg-red-50 px-1.5 py-0.5 rounded',
+    'En Riesgo': 'text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded',
+    Pendiente: 'text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded',
   }
   return (
-    <div className="flex items-start gap-3 py-2 border-b border-slate-700/30 last:border-0">
+    <div className="flex items-start gap-3 py-2 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition px-2 -mx-2 rounded">
       <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center
-        ${hito.completado ? 'bg-emerald-500 border-emerald-500' : hito.en_riesgo ? 'border-amber-500' : 'border-slate-600'}`}>
-        {hito.completado && <span className="text-white text-xs">✓</span>}
+        ${hito.completado ? 'bg-emerald-500 border-emerald-500' : hito.en_riesgo ? 'border-amber-500' : 'border-slate-300'}`}>
+        {hito.completado && <span className="text-white text-[10px]">✓</span>}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-slate-300 line-clamp-1">{hito.descripcion}</p>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className={`text-xs ${statusColors[hito.estatus] ?? statusColors.Pendiente}`}>{hito.estatus}</span>
+        <p className="text-sm text-slate-800 font-medium line-clamp-1">{hito.descripcion}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <span className={`text-[10px] uppercase font-bold tracking-wide ${statusColors[hito.estatus] ?? statusColors.Pendiente}`}>{hito.estatus}</span>
           {hito.fecha_fin_plan && (
-            <span className="text-xs text-slate-600">
-              → {new Date(hito.fecha_fin_plan).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}
+            <span className="text-xs font-semibold text-slate-500 flex items-center gap-0.5">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              {new Date(hito.fecha_fin_plan).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}
             </span>
           )}
         </div>
       </div>
-      <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${GATE_COLORS[hito.gate as Gate]}`}>{hito.gate}</span>
+      <span className={`text-xs px-2 py-0.5 rounded font-bold ${GATE_COLORS[hito.gate as Gate]}`}>{hito.gate}</span>
     </div>
   )
 }

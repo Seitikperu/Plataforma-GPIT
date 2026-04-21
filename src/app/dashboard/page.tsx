@@ -45,8 +45,8 @@ export default async function DashboardPage() {
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Dashboard Ejecutivo</h1>
-        <p className="text-slate-400 text-sm mt-1">Resumen de iniciativas GPIT · Año {new Date().getFullYear()}</p>
+        <h1 className="text-2xl font-bold text-slate-900">Dashboard Ejecutivo</h1>
+        <p className="text-slate-600 text-sm mt-1">Resumen de iniciativas GPIT · Año {new Date().getFullYear()}</p>
       </div>
 
       {/* KPI Cards */}
@@ -66,15 +66,15 @@ export default async function DashboardPage() {
       {/* Funnel + Semáforos */}
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Funnel de Gates */}
-        <div className="lg:col-span-2 bg-slate-800/50 border border-slate-700/50 rounded-xl p-6">
-          <h2 className="text-base font-semibold text-white mb-5">Funnel de Iniciativas por Gate</h2>
+        <div className="lg:col-span-2 bg-white border border-slate-200 shadow-sm rounded-xl p-6">
+          <h2 className="text-base font-bold text-slate-900 mb-5">Funnel de Iniciativas por Gate</h2>
           <div className="space-y-3">
             {funnelByGate.map(({ gate, cantidad, impacto }) => (
               <div key={gate} className="flex items-center gap-3">
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-md w-24 text-center ${GATE_COLORS[gate]}`}>
+                <span className={`text-[11px] uppercase font-bold tracking-wide px-2 py-0.5 rounded-md w-24 text-center ${GATE_COLORS[gate]}`}>
                   {gate}
                 </span>
-                <div className="flex-1 h-7 bg-slate-700/40 rounded-lg overflow-hidden">
+                <div className="flex-1 h-7 bg-slate-100 rounded-lg overflow-hidden shadow-inner">
                   <div
                     className="h-full bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg flex items-center px-2 transition-all duration-700"
                     style={{ width: cantidad > 0 ? `${Math.max((cantidad / maxCantidad) * 100, 8)}%` : '0%' }}
@@ -84,28 +84,28 @@ export default async function DashboardPage() {
                     )}
                   </div>
                 </div>
-                <span className="text-xs text-slate-400 w-20 text-right">
+                <span className="text-xs font-medium text-slate-600 w-20 text-right">
                   {impacto > 0 ? `$${impacto.toFixed(1)}M` : '-'}
                 </span>
               </div>
             ))}
           </div>
-          <div className="mt-4 flex gap-6 text-xs text-slate-500">
+          <div className="mt-4 flex gap-6 text-xs text-slate-500 font-medium">
             <span>Barras: cantidad de iniciativas</span>
             <span>Derecha: impacto acumulado</span>
           </div>
         </div>
 
         {/* Semáforos */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6">
-          <h2 className="text-base font-semibold text-white mb-5">Resumen Semáforos</h2>
+        <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6">
+          <h2 className="text-base font-bold text-slate-900 mb-5">Resumen Semáforos</h2>
           {resumen.length === 0 ? (
             <p className="text-slate-500 text-sm">Sin datos</p>
           ) : (
             <div className="space-y-4">
               {resumen.map(r => (
                 <div key={r.unidad} className="space-y-2">
-                  <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider">{r.unidad}</p>
+                  <p className="text-xs font-bold text-slate-600 uppercase tracking-wider">{r.unidad}</p>
                   <div className="flex gap-3">
                     <SemaforoChip color="emerald" label="Verde" count={r.semaforo_verde} />
                     <SemaforoChip color="amber" label="Amarillo" count={r.semaforo_amarillo} />
@@ -118,12 +118,12 @@ export default async function DashboardPage() {
 
           {/* Alertas rojas */}
           {alertas.length > 0 && (
-            <div className="mt-5 pt-4 border-t border-slate-700/50">
-              <p className="text-xs font-semibold text-red-400 mb-2">⚠ Iniciativas en Alerta</p>
+            <div className="mt-5 pt-4 border-t border-slate-200">
+              <p className="text-xs font-bold text-red-600 mb-2">⚠ Iniciativas en Alerta</p>
               <ul className="space-y-1.5">
                 {alertas.slice(0, 5).map(a => (
-                  <li key={a.codigo} className="text-xs text-slate-400 truncate">
-                    <span className="text-red-400 font-medium">{a.codigo}</span> · {a.titulo}
+                  <li key={a.codigo} className="text-xs text-slate-600 truncate font-medium">
+                    <span className="text-red-600 font-bold">{a.codigo}</span> · {a.titulo}
                   </li>
                 ))}
               </ul>
@@ -134,37 +134,37 @@ export default async function DashboardPage() {
 
       {/* Tabla por unidad */}
       {resumen.length > 0 && (
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-700/50">
-            <h2 className="text-base font-semibold text-white">Resumen por Unidad</h2>
+        <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
+            <h2 className="text-base font-bold text-slate-900">Resumen por Unidad</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700/50">
+                <tr className="border-b border-slate-200 bg-slate-50">
                   {['Unidad', 'Activas', 'L4 Captura', 'Completadas', '🟢', '🟡', '🔴', 'Plan M$', 'Real M$', 'Ejec.'].map(h => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    <th key={h} className="px-4 py-3 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-slate-100">
                 {resumen.map(r => {
                   const ejec = r.plan_total_m > 0 ? Math.round((r.real_total_m / r.plan_total_m) * 100) : 0
                   return (
-                    <tr key={r.unidad} className="border-b border-slate-700/30 hover:bg-slate-700/20 transition">
-                      <td className="px-4 py-3 font-medium text-white">{r.unidad}</td>
-                      <td className="px-4 py-3 text-slate-300">{r.iniciativas_activas}</td>
-                      <td className="px-4 py-3 text-emerald-400 font-medium">{r.en_captura_valor}</td>
-                      <td className="px-4 py-3 text-slate-300">{r.completadas}</td>
-                      <td className="px-4 py-3 text-emerald-400">{r.semaforo_verde}</td>
-                      <td className="px-4 py-3 text-amber-400">{r.semaforo_amarillo}</td>
-                      <td className="px-4 py-3 text-red-400">{r.semaforo_rojo}</td>
-                      <td className="px-4 py-3 text-slate-300">${r.plan_total_m?.toFixed(2)}M</td>
-                      <td className="px-4 py-3 text-slate-300">${r.real_total_m?.toFixed(2)}M</td>
+                    <tr key={r.unidad} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 font-semibold text-slate-800">{r.unidad}</td>
+                      <td className="px-4 py-3 text-slate-600 font-medium">{r.iniciativas_activas}</td>
+                      <td className="px-4 py-3 text-emerald-600 font-bold">{r.en_captura_valor}</td>
+                      <td className="px-4 py-3 text-slate-600 font-medium">{r.completadas}</td>
+                      <td className="px-4 py-3 text-emerald-600 font-medium">{r.semaforo_verde}</td>
+                      <td className="px-4 py-3 text-amber-600 font-medium">{r.semaforo_amarillo}</td>
+                      <td className="px-4 py-3 text-red-600 font-medium">{r.semaforo_rojo}</td>
+                      <td className="px-4 py-3 text-slate-800 font-semibold">${r.plan_total_m?.toFixed(2)}M</td>
+                      <td className="px-4 py-3 text-slate-800 font-semibold">${r.real_total_m?.toFixed(2)}M</td>
                       <td className="px-4 py-3">
-                        <span className={`font-semibold ${ejec >= 90 ? 'text-emerald-400' : ejec >= 70 ? 'text-amber-400' : 'text-red-400'}`}>
+                        <span className={`font-bold ${ejec >= 90 ? 'text-emerald-600' : ejec >= 70 ? 'text-amber-600' : 'text-red-600'}`}>
                           {ejec}%
                         </span>
                       </td>
@@ -181,7 +181,7 @@ export default async function DashboardPage() {
       {resumen.length === 0 && (
         <div className="text-center py-20 text-slate-500">
           <div className="text-4xl mb-3">📊</div>
-          <p className="font-medium text-slate-400">No hay datos aún</p>
+          <p className="font-bold text-slate-600">No hay datos aún</p>
           <p className="text-sm mt-1">Comienza creando la primera iniciativa</p>
         </div>
       )}
@@ -193,19 +193,19 @@ function KpiCard({ label, value, icon, color, sub }: {
   label: string; value: string | number; icon: string; color: string; sub?: string
 }) {
   const colors: Record<string, string> = {
-    blue: 'from-blue-900/40 to-blue-800/20 border-blue-700/30',
-    emerald: 'from-emerald-900/40 to-emerald-800/20 border-emerald-700/30',
-    indigo: 'from-indigo-900/40 to-indigo-800/20 border-indigo-700/30',
-    amber: 'from-amber-900/40 to-amber-800/20 border-amber-700/30',
-    red: 'from-red-900/40 to-red-800/20 border-red-700/30',
+    blue: 'from-blue-50 to-white border-blue-100',
+    emerald: 'from-emerald-50 to-white border-emerald-100',
+    indigo: 'from-indigo-50 to-white border-indigo-100',
+    amber: 'from-amber-50 to-white border-amber-100',
+    red: 'from-red-50 to-white border-red-100',
   }
   return (
-    <div className={`bg-gradient-to-br ${colors[color]} border rounded-xl p-5`}>
+    <div className={`bg-gradient-to-br ${colors[color]} border rounded-xl p-5 shadow-sm`}>
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">{label}</p>
-          <p className="text-2xl font-bold text-white mt-1">{value}</p>
-          {sub && <p className="text-xs text-slate-500 mt-0.5">{sub}</p>}
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label}</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{value}</p>
+          {sub && <p className="text-xs font-semibold text-slate-600 mt-0.5">{sub}</p>}
         </div>
         <span className="text-2xl">{icon}</span>
       </div>
@@ -215,14 +215,14 @@ function KpiCard({ label, value, icon, color, sub }: {
 
 function SemaforoChip({ color, label, count }: { color: string; label: string; count: number }) {
   const colors: Record<string, string> = {
-    emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    amber: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    red: 'bg-red-500/10 text-red-400 border-red-500/20',
+    emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    amber: 'bg-amber-50 text-amber-700 border-amber-200',
+    red: 'bg-red-50 text-red-700 border-red-200',
   }
   return (
-    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium ${colors[color]}`}>
+    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-bold ${colors[color]}`}>
       <span>{count}</span>
-      <span className="text-slate-500">{label}</span>
+      <span className="text-slate-600 font-medium">{label}</span>
     </div>
   )
 }
