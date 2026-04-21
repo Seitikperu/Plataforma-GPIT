@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
 import { ROL_LABELS } from '@/types'
 import type { RolUsuario } from '@/types'
 
@@ -23,6 +24,15 @@ export default async function UsuariosPage() {
           <h1 className="text-2xl font-bold text-slate-900">Usuarios</h1>
           <p className="text-slate-600 text-sm mt-1 mb-2">{perfiles?.length ?? 0} usuarios registrados</p>
         </div>
+        <Link
+          href="/admin/usuarios/nuevo"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition shadow-sm"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Nuevo Usuario
+        </Link>
       </div>
 
       <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
