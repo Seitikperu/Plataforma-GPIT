@@ -293,11 +293,11 @@ export default function KpisPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200">
-                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider sticky left-0 bg-slate-50 w-28">Concepto</th>
+                <th className="px-4 py-3 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider sticky left-0 bg-slate-50 w-28">Concepto</th>
                 {MESES.map(m => (
-                  <th key={m} className="px-2 py-3 text-center text-xs font-bold text-slate-700 uppercase w-20 bg-slate-50">{m}</th>
+                  <th key={m} className="px-2 py-3 text-center text-[11px] font-bold text-slate-500 uppercase w-20 bg-slate-50">{m}</th>
                 ))}
-                <th className="px-4 py-3 text-center text-xs font-bold text-slate-700 uppercase w-24 bg-slate-50">Total</th>
+                <th className="px-4 py-3 text-center text-[11px] font-bold text-slate-500 uppercase w-24 bg-slate-50">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -357,11 +357,11 @@ export default function KpisPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200">
-                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider sticky left-0 bg-slate-50 w-28">Concepto</th>
+                <th className="px-4 py-3 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider sticky left-0 bg-slate-50 w-28">Concepto</th>
                 {MESES.map(m => (
-                  <th key={m} className="px-2 py-3 text-center text-xs font-bold text-slate-700 uppercase w-20 bg-slate-50">{m}</th>
+                  <th key={m} className="px-2 py-3 text-center text-[11px] font-bold text-slate-500 uppercase w-20 bg-slate-50">{m}</th>
                 ))}
-                <th className="px-4 py-3 text-center text-xs font-bold text-slate-700 uppercase w-24 bg-slate-50">Total</th>
+                <th className="px-4 py-3 text-center text-[11px] font-bold text-slate-500 uppercase w-24 bg-slate-50">Total</th>
               </tr>
             </thead>
             <tbody>
